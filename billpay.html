@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Bill Payment System</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --header-bg: #0078d7;
+            --header-text: #fff;
+            --button-bg: #0078d7;
+            --button-hover: #005bb5;
+            --table-bg: #fff;
+            --table-border: #ddd;
+            --footer-bg: #333;
+            --footer-text: #fff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1e1e2f;
+            --text-color: #e0e0e0;
+            --header-bg: #4a148c;
+            --header-text: #ffcc80;
+            --button-bg: #6a1b9a;
+            --button-hover: #8e24aa;
+            --table-bg: #2a2a3b;
+            --table-border: #444;
+            --footer-bg: #1e1e2f;
+            --footer-text: #ffcc80;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--button-bg);
+            color: var(--header-text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .theme-toggle:hover {
+            background: var(--button-hover);
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group button {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            background-color: var(--button-bg);
+            color: var(--header-text);
+            border: none;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: var(--button-hover);
+        }
+        .success-animation {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeOut 2s ease-in-out forwards;
+        }
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+        }
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 300px;
+            border: 1px solid var(--table-border);
+            margin-top: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--table-bg);
+        }
+        table th, table td {
+            border: 1px solid var(--table-border);
+            padding: 0.8rem;
+            text-align: left;
+        }
+        table th {
+            background-color: var(--button-bg);
+            color: var(--header-text);
+        }
+        table td {
+            word-wrap: break-word;
+        }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem 0;
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            table th, table td {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
+            .form-group input, .form-group select, .form-group button {
+                padding: 0.6rem;
+            }
+            .theme-toggle {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Electricity Bill Payment System</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    </header>
+    <div class="container">
+        <h2>Pay Your Bill</h2>
+        <form id="paymentForm">
+            <div class="form-group">
+                <label for="accountId">Account ID</label>
+                <input type="text" id="accountId" name="accountId" placeholder="Enter Account ID" required>
+            </div>
+            <div class="form-group">
+                <label for="customerName">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" placeholder="Enter Customer Name" required>
+            </div>
+            <div class="form-group">
+                <label for="billingMonth">Billing Month</label>
+                <select id="billingMonth" name="billingMonth" required>
+                    <option value="">Select Month</option>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount (₹)</label>
+                <input type="number" id="amount" name="amount" placeholder="Enter Amount in Rupees" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Pay Now</button>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        <h2>Transaction History</h2>
+        <div class="form-group">
+            <label for="searchAccountId">Search by Account ID</label>
+            <input type="text" id="searchAccountId" placeholder="Enter Account ID to Search">
+            <button onclick="searchTransactions()" style="margin-top: 0.5rem;">Search</button>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Customer Name</th>
+                        <th>Billing Month</th>
+                        <th>Amount (₹)</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTable">
+                    <!-- Transactions will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+        <button onclick="deleteAllTransactions()" style="margin-top: 1rem; background-color: #d9534f; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer;">
+            Delete All Transactions
+        </button>
+    </div>
+    <div class="success-animation" id="successAnimation">
+        Payment Successful!
+    </div>
+    <audio id="successSound" src="click-124467.mp3" preload="auto"></audio>
+    <footer>
+        <p>&copy; 2025 Electricity Bill Payment System. Managed by Vishnu DevOps TM.</p>
+    </footer>
+    <script>
+        // Toggle Theme
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", newTheme);
+        }
+
+        // Save Transaction and Show Animation
+        document.getElementById("paymentForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const accountId = document.getElementById("accountId").value;
+            const customerName = document.getElementById("customerName").value;
+            const billingMonth = document.getElementById("billingMonth").value;
+            const amount = document.getElementById("amount").value;
+            const now = new Date();
+            const date = now.toISOString().split("T")[0];
+            const time = now.toTimeString().split(" ")[0];
+
+            const transaction = { accountId, customerName, billingMonth, amount, date, time };
+
+            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            transactions.push(transaction);
+            localStorage.setItem("transactions", JSON.stringify(transactions));
+
+            // Play success sound
+            const successSound = document.getElementById("successSound");
+            successSound.play();
+
+            // Show success animation
+            const successAnimation = document.getElementById("successAnimation");
+            successAnimation.style.display = "block";
+
+            // Hide animation after 2 seconds
+            setTimeout(() => {
+                successAnimation.style.display = "none";
+            }, 2000);
+
+            // Reset the form
+            document.getElementById("paymentForm").reset();
+
+            // Update transaction table
+            displayTransactions();
+        });
+
+        // Display Transactions
+        function displayTransactions() {
+            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            const transactionTable = document.getElementById("transactionTable");
+            transactionTable.innerHTML = "";
+
+            transactions.forEach(transaction => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${transaction.accountId}</td>
+                    <td>${transaction.customerName}</td>
+                    <td>${transaction.billingMonth}</td>
+                    <td>₹${transaction.amount}</td>
+                    <td>${transaction.date}</td>
+                    <td>${transaction.time}</td>
+                `;
+                transactionTable.appendChild(row);
+            });
+        }
+
+        // Search Transactions
+        function searchTransactions() {
+            const searchAccountId = document.getElementById("searchAccountId").value;
+            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            const filteredTransactions = transactions.filter(transaction => transaction.accountId.includes(searchAccountId));
+
+            const transactionTable = document.getElementById("transactionTable");
+            transactionTable.innerHTML = "";
+
+            filteredTransactions.forEach(transaction => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${transaction.accountId}</td>
+                    <td>${transaction.customerName}</td>
+                    <td>${transaction.billingMonth}</td>
+                    <td>₹${transaction.amount}</td>
+                    <td>${transaction.date}</td>
+                    <td>${transaction.time}</td>
+                `;
+                transactionTable.appendChild(row);
+            });
+
+            if (filteredTransactions.length === 0) {
+                alert("No transactions found for the given Account ID.");
+            }
+        }
+
+        // Delete All Transactions
+        function deleteAllTransactions() {
+            const pin = prompt("Enter PIN to confirm deletion:");
+            if (pin === "1234") { // Replace "1234" with your desired PIN
+                localStorage.removeItem("transactions"); // Clear transactions from localStorage
+                displayTransactions(); // Update the transaction table
+                alert("All transactions have been deleted.");
+            } else {
+                alert("Incorrect PIN. Deletion canceled.");
+            }
+        }
+
+        // Load transactions on page load
+        window.onload = displayTransactions;
+    </script>
+</body>
+</html>
